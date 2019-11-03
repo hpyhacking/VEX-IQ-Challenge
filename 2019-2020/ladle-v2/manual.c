@@ -38,13 +38,13 @@ task main()
 
 		if(getJoystickValue(BtnFUp) == 1)
 		{
-			setMotorTarget(leftArmMotor, 220, 100);
-			setMotorTarget(rightArmMotor, 220, 100);
+			setMotorTarget(leftArmMotor, 245, 100);
+			setMotorTarget(rightArmMotor, 245, 100);
 		}
 		else if(getJoystickValue(BtnFDown) == 1)
 		{
-			setMotorTarget(leftArmMotor, 0, 50);
-			setMotorTarget(rightArmMotor, 0, 50);
+			setMotorTarget(leftArmMotor, -25, 50);
+			setMotorTarget(rightArmMotor, -25, 50);
 		}
 		else
 		{

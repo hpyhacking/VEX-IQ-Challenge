@@ -27,6 +27,7 @@ task main()
 	bool F_UP_PRESS_UP = true;
 	bool F_DOWN_PRESS_UP = true;
 	bool E_UP_PRESS_UP = true;
+	bool E_DOWN_PRESS_UP = true;
 	bool R_UP_PRESS_UP = true;
 	bool R_DOWN_PRESS_UP = true;
 	bool L_UP_PRESS_UP = true;
@@ -45,9 +46,20 @@ task main()
 
 	setMotorEncoderUnits(encoderDegrees);
 
+	resetMotorEncoder(leftWheelMotor);
+	resetMotorEncoder(rightWheelMotor);
 	resetMotorEncoder(ladleMotor);
+	resetMotorEncoder(fixatorMotor);
+
 	setMotorBrakeMode(ladleMotor, motorHold);
 	setMotorTarget(ladleMotor, 0, 80);
+
+	setMotorBrakeMode(leftWheelMotor, motorBrake);
+	setMotorBrakeMode(rightWheelMotor, motorBrake);
+
+	setMotorBrakeMode(fixatorMotor, motorHold);
+	setMotorBrakeMode(leftLiftMotor, motorHold);
+	setMotorBrakeMode(rightLiftMotor, motorHold);
 
 	while(true)
 	{
@@ -144,6 +156,19 @@ task main()
 
 		if(getJoystickValue(BtnEUp) == 0) {
 			E_UP_PRESS_UP = true;
+		}
+
+		////////////////////////////////////////
+		// E DOWN
+		////////////////////////////////////////
+		if(getJoystickValue(BtnEDown) == 1 && E_DOWN_PRESS_UP) {
+			setMotorTarget(leftLiftMotor, getMotorTarget(leftLiftMotor) - 100, 60);
+			setMotorTarget(rightLiftMotor, getMotorTarget(rightLiftMotor) - 100, 60);
+			E_DOWN_PRESS_UP = false;
+		}
+
+		if(getJoystickValue(BtnEDown) == 0) {
+			E_DOWN_PRESS_UP = true;
 		}
 
 		////////////////////////////////////////
@@ -259,10 +284,7 @@ task main()
 		// fixator state machine
 		/////////////////////////////////////////
 		if (fixatorCurrent == FIXATOR_OFF && fixatorReady == FIXATOR_ON) {
-			setMotorTarget(fixatorMotor, 220, 60);
-			//wait(500);
-			//setMotorTarget(leftLiftMotor, getMotorTarget(leftLiftMotor) - 100, 60);
-			//setMotorTarget(rightLiftMotor, getMotorTarget(rightLiftMotor) - 100, 60);
+			setMotorTarget(fixatorMotor, 210, 80);
 			fixatorCurrent = fixatorReady;
 		}
 

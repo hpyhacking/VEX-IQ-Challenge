@@ -10,9 +10,24 @@
 
 #define FIXATOR_OFF "FIXATOR_OFF"
 #define FIXATOR_ON "FIXATOR_ON"
-#define LIFT_HIGH "LIFT_HIGH"
-#define LIFT_LOW "LIFT_LOW"
-#define LIFT_READY "LIFT_READY"
+
+#define LIFT_HIGHER "LIFT_HIGHER"
+#define LIFT_MIDDLE "LIFT_MIDDLE"
+#define LIFT_LOWER "LIFT_LOWER"
+#define LIFT_MANUAL "LIFT_MANUAL"
+
+#define LIFT_HIGHER_INT_H -50
+#define LIFT_HIGHER_INT -30
+#define LIFT_HIGHER_INT_L 120
+
+#define LIFT_MIDDLE_INT_H 500
+#define LIFT_MIDDLE_INT 550
+#define LIFT_MIDDLE_INT_L 600
+
+#define LIFT_LOWER_INT_H 1150
+#define LIFT_LOWER_INT 1200
+#define LIFT_LOWER_INT_L 1250
+
 #define LADLE_READY "LADLE_READY"
 #define LADLE_SHOOT "LADLE_SHOOT"
 #define LADLE_TILT "LADLE_TILT"
@@ -36,8 +51,8 @@ task main()
 	string fixatorCurrent = FIXATOR_OFF;
 	string fixatorReady = FIXATOR_OFF;
 
-	string liftCurrent = LIFT_HIGH;
-	string liftReady = LIFT_HIGH;
+	string liftCurrent = LIFT_HIGHER;
+	string liftReady = LIFT_HIGHER;
 
 	string ladleCurrent = LADLE_READY;
 	string ladleReady = LADLE_READY;
@@ -104,12 +119,17 @@ task main()
 		// F UP
 		////////////////////////////////////////
 		if(getJoystickValue(BtnFUp) == 1 && F_UP_PRESS_UP) {
-			if (liftCurrent == LIFT_LOW) {
-				liftReady = LIFT_HIGH;
-			}
+			int currentTarget = getMotorTarget(leftLiftMotor);
 
-			if (liftCurrent == LIFT_READY) {
-				liftReady = LIFT_LOW;
+			if (currentTarget < LIFT_LOWER_INT_L && currentTarget > LIFT_MIDDLE_INT_L)
+			{
+				setMotorTarget(leftLiftMotor, LIFT_MIDDLE_INT, 80);
+				setMotorTarget(rightLiftMotor, LIFT_MIDDLE_INT, 80);
+			}
+			else if (currentTarget < LIFT_MIDDLE_INT_L && currentTarget > LIFT_HIGHER_INT_H)
+			{
+				setMotorTarget(leftLiftMotor, LIFT_HIGHER_INT, 80);
+				setMotorTarget(rightLiftMotor, LIFT_HIGHER_INT, 80);
 			}
 
 			F_UP_PRESS_UP = false;
@@ -123,12 +143,17 @@ task main()
 		// F DOWN
 		////////////////////////////////////////
 		if(getJoystickValue(BtnFDown) == 1 && F_DOWN_PRESS_UP) {
-			if (liftCurrent == LIFT_HIGH) {
-				liftReady = LIFT_LOW;
-			}
+			int currentTarget = getMotorTarget(leftLiftMotor);
 
-			if (liftCurrent == LIFT_LOW) {
-				liftReady = LIFT_READY;
+			if (currentTarget > LIFT_HIGHER_INT_H && currentTarget < LIFT_MIDDLE_INT_H)
+			{
+				setMotorTarget(leftLiftMotor, LIFT_MIDDLE_INT, 80);
+				setMotorTarget(rightLiftMotor, LIFT_MIDDLE_INT, 80);
+			}
+			else if (currentTarget > LIFT_MIDDLE_INT_H && currentTarget < LIFT_LOWER_INT_H)
+			{
+				setMotorTarget(leftLiftMotor, LIFT_LOWER_INT, 80);
+				setMotorTarget(rightLiftMotor, LIFT_LOWER_INT, 80);
 			}
 
 			F_DOWN_PRESS_UP = false;
@@ -162,8 +187,14 @@ task main()
 		// E DOWN
 		////////////////////////////////////////
 		if(getJoystickValue(BtnEDown) == 1 && E_DOWN_PRESS_UP) {
-			setMotorTarget(leftLiftMotor, getMotorTarget(leftLiftMotor) - 100, 60);
-			setMotorTarget(rightLiftMotor, getMotorTarget(rightLiftMotor) - 100, 60);
+			int currentTarget = getMotorTarget(leftLiftMotor);
+
+			if (currentTarget > LIFT_HIGHER_INT_L && currentTarget < LIFT_LOWER_INT_L)
+			{
+				setMotorTarget(leftLiftMotor, currentTarget - 100, 60);
+				setMotorTarget(rightLiftMotor, currentTarget - 100, 60);
+			}
+
 			E_DOWN_PRESS_UP = false;
 		}
 
@@ -175,6 +206,9 @@ task main()
 		// R UP
 		////////////////////////////////////////
 		if (getJoystickValue(BtnRUp) == 1 && R_UP_PRESS_UP) {
+			setMotorTarget(leftLiftMotor, 150, 80);
+			setMotorTarget(rightLiftMotor, 150, 80);
+
 			R_UP_PRESS_UP = false;
 		}
 
@@ -186,6 +220,22 @@ task main()
 		// R DOWN
 		////////////////////////////////////////
 		if (getJoystickValue(BtnRDown) == 1 && R_DOWN_PRESS_UP) {
+			setMotorTarget(leftLiftMotor, 360, 80);
+			setMotorTarget(rightLiftMotor, 360, 80);
+
+			wait(100, milliseconds);
+
+			setMotorSpeed(leftWheelMotor, 120);
+			setMotorSpeed(rightWheelMotor, 120);
+
+			wait(550, milliseconds);
+
+			setMotorSpeed(leftWheelMotor, 0);
+			setMotorSpeed(rightWheelMotor, 0);
+
+			setMotorTarget(leftLiftMotor, 150, 80);
+			setMotorTarget(rightLiftMotor, 150, 80);
+
 
 			R_DOWN_PRESS_UP = false;
 		}
@@ -293,29 +343,8 @@ task main()
 			fixatorCurrent = fixatorReady;
 		}
 
-		/////////////////////////////////////////
-		// lift state machine
-		/////////////////////////////////////////
-		if (liftCurrent != liftReady && liftReady == LIFT_LOW) {
-			setMotorTarget(leftLiftMotor, 550, 80);
-			setMotorTarget(rightLiftMotor, 550, 80);
-			liftCurrent = liftReady;
-		}
-
-		if (liftCurrent == LIFT_LOW && liftReady == LIFT_READY) {
-			setMotorTarget(leftLiftMotor, 1200, 80);
-			setMotorTarget(rightLiftMotor, 1200, 80);
-			liftCurrent = liftReady;
-		}
-
-		if (liftCurrent == LIFT_LOW && liftReady == LIFT_HIGH) {
-			setMotorTarget(leftLiftMotor, -30, 80);
-			setMotorTarget(rightLiftMotor, -30, 80);
-			liftCurrent = liftReady;
-		}
-
 		displayCenteredTextLine(0, "%s", ladleCurrent);
-		displayCenteredTextLine(2, "%s", liftCurrent);
-		displayCenteredTextLine(4, "%s", fixatorCurrent);
+		displayCenteredTextLine(2, "%s", fixatorCurrent);
+		displayCenteredTextLine(4, "LIFT_TARGET %d", getMotorTarget(leftLiftMotor));
 	}
 }

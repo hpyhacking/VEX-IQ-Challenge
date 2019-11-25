@@ -334,12 +334,12 @@ task main()
 		// fixator state machine
 		/////////////////////////////////////////
 		if (fixatorCurrent == FIXATOR_OFF && fixatorReady == FIXATOR_ON) {
-			setMotorTarget(fixatorMotor, 210, 80);
+			setMotorTarget(fixatorMotor, 260, 200);
 			fixatorCurrent = fixatorReady;
 		}
 
 		if (fixatorCurrent == FIXATOR_ON && fixatorReady == FIXATOR_OFF) {
-			setMotorTarget(fixatorMotor, 0, 100);
+			setMotorTarget(fixatorMotor, 0, 200);
 			fixatorCurrent = fixatorReady;
 		}
 

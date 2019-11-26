@@ -24,11 +24,14 @@
 #define TURN_LEFT(degress) turnLeft(degress);
 #define TURN_RIGHT(degress) turnRight(degress);
 #define SET_HIGH_SPEED setSpeed(60);
-#define SET_LOW_SPEED setSpeed(40);
+
+#define SET_LOW_SPEED setSpeed(15);
+
+#define SET_NORMAL_SPEED setSpeed(40);
 #define FIXATOR_OPEN fixator(150);
 #define FIXATOR_ON fixator(260);
 #define FIXATOR_OFF fixator(0);
-#define LIFT_RESET lift(-30, false);
+#define LIFT_RESET lift(-30, true);
 #define LIFT_HIGH lift(-30, false);
 #define LIFT_MIDDLE lift(530, false);
 #define LIFT_LOW lift(1200, false);
@@ -57,48 +60,49 @@ void waitTouchLED();
 
 void readyForGreenQube() {
 	LIFT_LOW
-	FIXATOR_OPEN
+	FIXATOR_OFF
 	WAIT_LED
 }
 
 void takeLeftGreenQube() {
+	SET_NORMAL_SPEED
+	FORWARD(7)
+	SPIN_RIGHT(45)
+	TURN_LEFT(88)
 	SET_LOW_SPEED
-	FORWARD(9)
-	SPIN_LEFT(40)
-	FIXATOR_OFF
-	SPIN_RIGHT(35)
-	FORWARD(20)
+	FORWARD(15)
+	SET_NORMAL_SPEED
 	FIXATOR_ON
 	LIFT_MIDDLE
-	SPIN_RIGHT(8)
-	FORWARD(45)
+
+
+	TURN_RIGHT(50)
+
+	FORWARD(33)
 	FIXATOR_OFF
 	SET_HIGH_SPEED
-	BACK(15)
-	SPIN_L(25)
-	BACK(60)
+	BACK(35)
 }
 
 void takeRightGreenQube() {
+	SET_NORMAL_SPEED
+	FORWARD(5)
+	SPIN_LEFT(45)
+	TURN_RIGHT(88)
 	SET_LOW_SPEED
-	FORWARD(9)
-	SPIN_RIGHT(40)
-	FIXATOR_OFF
-	SPIN_LEFT(35)
-	FORWARD(20)
+	FORWARD(15)
+	SET_NORMAL_SPEED
 	FIXATOR_ON
 	LIFT_MIDDLE
-	SPIN_LEFT(25)
-	FORWARD(45)
+	TURN_LEFT(68)
+	FORWARD(34)
 	FIXATOR_OFF
 	SET_HIGH_SPEED
-	BACK(15)
-	SPIN_R(25)
-	BACK(60)
+	BACK(40)
 }
 
 void takeMedialGreenQube() {
-	SET_LOW_SPEED
+	SET_NORMAL_SPEED
 	FIXATOR_OFF
 
 	TURN_LEFT(110)
@@ -122,13 +126,13 @@ task main()
 	init();
 
 	readyForGreenQube();
+	takeRightGreenQube();
+
+	readyForGreenQube();
 	takeMedialGreenQube();
 
-	//readyForGreenQube();
-	//takeLeftGreenQube();
-
-	//readyForGreenQube();
-	//takeRightGreenQube();
+	readyForGreenQube();
+	takeLeftGreenQube();
 
 	WAIT_LED
 	FIXATOR_OFF

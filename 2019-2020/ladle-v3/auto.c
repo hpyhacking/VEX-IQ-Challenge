@@ -11,12 +11,18 @@
 #define LGC 2
 #define WGC 9
 
+#define SPIN_SPEED 15
+#define TURN_SPEED 20
+#define AIM_SPEED 3
+
 #define FORWARD(cm) move(cm, cm, leftWheelSpeed, rightWheelSpeed);
 #define BACK(cm) move(0 - cm, 0 - cm, leftWheelSpeed, rightWheelSpeed);
-#define TURN_LEFT(degress) turnLeft(degress, true);
-#define TURN_RIGHT(degress) turnRight(degress, true);
-#define TURN_L(degress) turnLeft(degress, false);
-#define TURN_R(degress) turnRight(degress, false);
+#define SPIN_LEFT(degress) spinLeft(degress, true);
+#define SPIN_RIGHT(degress) spinRight(degress, true);
+#define SPIN_L(degress) spinLeft(degress, false);
+#define SPIN_R(degress) spinRight(degress, false);
+#define TURN_LEFT(degress) turnLeft(degress);
+#define TURN_RIGHT(degress) turnRight(degress);
 #define SET_HIGH_SPEED setSpeed(60);
 #define SET_LOW_SPEED setSpeed(20);
 #define FIXATOR_OPEN fixator(150);
@@ -40,8 +46,10 @@ void ladleShoot();
 void ladlePick();
 void setSpeed(int speed);
 void move(int leftDiff, int rightDiff, int leftSpeed, int rightSpeed);
-void turnLeft(int degress, bool aim);
-void turnRight(int degress, bool aim);
+void spinLeft(int degress, bool aim);
+void spinRight(int degress, bool aim);
+void turnLeft(int degress);
+void turnRight(int degress);
 void resetWheel();
 void fixator(int degress);
 void lift(int degress);
@@ -56,36 +64,36 @@ void readyForGreenQube() {
 void takeLeftGreenQube() {
 	SET_LOW_SPEED
 	FORWARD(9)
-	TURN_LEFT(40)
+	SPIN_LEFT(40)
 	FIXATOR_OFF
-	TURN_RIGHT(35)
+	SPIN_RIGHT(35)
 	FORWARD(20)
 	FIXATOR_ON
 	LIFT_MIDDLE
-	TURN_RIGHT(8)
+	SPIN_RIGHT(8)
 	FORWARD(45)
 	FIXATOR_OFF
 	SET_HIGH_SPEED
 	BACK(15)
-	TURN_L(25)
+	SPIN_L(25)
 	BACK(60)
 }
 
 void takeRightGreenQube() {
 	SET_LOW_SPEED
 	FORWARD(9)
-	TURN_RIGHT(40)
+	SPIN_RIGHT(40)
 	FIXATOR_OFF
-	TURN_LEFT(35)
+	SPIN_LEFT(35)
 	FORWARD(20)
 	FIXATOR_ON
 	LIFT_MIDDLE
-	TURN_LEFT(25)
+	SPIN_LEFT(25)
 	FORWARD(45)
 	FIXATOR_OFF
 	SET_HIGH_SPEED
 	BACK(15)
-	TURN_R(25)
+	SPIN_R(25)
 	BACK(60)
 }
 
@@ -93,19 +101,19 @@ void takeMedialGreenQube() {
 	SET_LOW_SPEED
 	FIXATOR_OFF
 	FORWARD(5)
-	TURN_LEFT(92)
+	SPIN_LEFT(92)
 	FORWARD(38)
-	TURN_RIGHT(40)
+	SPIN_RIGHT(40)
 	FORWARD(30)
 	FIXATOR_ON
 	LIFT_HIGH
-	TURN_LEFT(133)
+	SPIN_LEFT(133)
 	FORWARD(33)
 	FIXATOR_OFF
 	BACK(20)
 
 	SET_HIGH_SPEED
-	TURN_R(100)
+	SPIN_R(100)
 	BACK(40)
 }
 
@@ -129,12 +137,12 @@ task main()
 	LIFT_RESET
 }
 
-void turnLeft(int degress, bool aim) {
+void spinLeft(int degress, bool aim) {
 	resetGyro(gyro);
 
 	repeatUntil(getGyroDegrees(gyro) > degress) {
-		setMotorSpeed(leftWheelMotor, -15);
-		setMotorSpeed(rightWheelMotor, 15);
+		setMotorSpeed(leftWheelMotor, -SPIN_SPEED);
+		setMotorSpeed(rightWheelMotor, SPIN_SPEED);
 	}
 
 	setMotorSpeed(leftWheelMotor, 0);
@@ -145,13 +153,13 @@ void turnLeft(int degress, bool aim) {
 			int d = getGyroDegrees(gyro);
 
 		  if (d > degress) {
-				setMotorSpeed(leftWheelMotor, 3);
-				setMotorSpeed(rightWheelMotor, -3);
+				setMotorSpeed(leftWheelMotor, AIM_SPEED);
+				setMotorSpeed(rightWheelMotor, -AIM_SPEED);
 		  }
 
 		  if (d < degress) {
-		  	setMotorSpeed(leftWheelMotor, -3);
-				setMotorSpeed(rightWheelMotor, 3);
+		  	setMotorSpeed(leftWheelMotor, -AIM_SPEED);
+				setMotorSpeed(rightWheelMotor, AIM_SPEED);
 			}
 		}
 
@@ -162,12 +170,12 @@ void turnLeft(int degress, bool aim) {
 	resetWheel();
 }
 
-void turnRight(int degress, bool aim) {
+void spinRight(int degress, bool aim) {
 	resetGyro(gyro);
 
 	repeatUntil(getGyroDegrees(gyro) < 0 - degress) {
-		setMotorSpeed(leftWheelMotor, 15);
-		setMotorSpeed(rightWheelMotor, -15);
+		setMotorSpeed(leftWheelMotor, SPIN_SPEED);
+		setMotorSpeed(rightWheelMotor, -SPIN_SPEED);
 	}
 
 	setMotorSpeed(leftWheelMotor, 0);
@@ -178,13 +186,13 @@ void turnRight(int degress, bool aim) {
 			int d = getGyroDegrees(gyro);
 
 		  if (d < 0 - degress) {
-				setMotorSpeed(leftWheelMotor, -3);
-				setMotorSpeed(rightWheelMotor, 3);
+				setMotorSpeed(leftWheelMotor, -AIM_SPEED);
+				setMotorSpeed(rightWheelMotor, AIM_SPEED);
 		  }
 
 		  if (d > 0 - degress) {
-		  	setMotorSpeed(leftWheelMotor, 3);
-				setMotorSpeed(rightWheelMotor, -3);
+		  	setMotorSpeed(leftWheelMotor, AIM_SPEED);
+				setMotorSpeed(rightWheelMotor, -AIM_SPEED);
 			}
 		}
 
@@ -193,6 +201,56 @@ void turnRight(int degress, bool aim) {
 	}
 
 	resetWheel();
+}
+
+void turnLeft(int degress) {
+  resetGyro(gyro);
+
+  repeatUntil(getGyroDegrees(gyro) > degress) {
+    setMotorSpeed(rightWheelMotor, TURN_SPEED);
+  }
+
+  setMotorSpeed(rightWheelMotor, 0);
+
+  repeatUntil(getGyroDegrees(gyro) == degress) {
+    int d = getGyroDegrees(gyro);
+
+    if (d > degress) {
+      setMotorSpeed(rightWheelMotor, AIM_SPEED);
+    }
+
+    if (d < degress) {
+      setMotorSpeed(rightWheelMotor, -AIM_SPEED);
+    }
+  }
+
+  setMotorSpeed(rightWheelMotor, 0);
+  resetWheel();
+}
+
+void turnRight(int degress) {
+  resetGyro(gyro);
+
+  repeatUntil(getGyroDegrees(gyro) < 0 - degress) {
+    setMotorSpeed(leftWheelMotor, TURN_SPEED);
+  }
+
+  setMotorSpeed(leftWheelMotor, 0);
+
+  repeatUntil(getGyroDegrees(gyro) == 0 - degress) {
+    int d = getGyroDegrees(gyro);
+
+    if (d < 0 - degress) {
+      setMotorSpeed(leftWheelMotor, -AIM_SPEED);
+    }
+
+    if (d > 0 - degress) {
+      setMotorSpeed(leftWheelMotor, AIM_SPEED);
+    }
+  }
+
+  setMotorSpeed(leftWheelMotor, 0);
+  resetWheel();
 }
 
 void setSpeed(int speed) {

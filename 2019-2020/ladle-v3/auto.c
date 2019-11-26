@@ -48,13 +48,13 @@ void lift(int degress);
 void waitTouchLED();
 
 void readyForGreenQube() {
-	SET_LOW_SPEED
 	LIFT_LOW
 	FIXATOR_OPEN
 	WAIT_LED
 }
 
 void takeLeftGreenQube() {
+	SET_LOW_SPEED
 	FORWARD(9)
 	TURN_LEFT(40)
 	FIXATOR_OFF
@@ -72,6 +72,7 @@ void takeLeftGreenQube() {
 }
 
 void takeRightGreenQube() {
+	SET_LOW_SPEED
 	FORWARD(9)
 	TURN_RIGHT(40)
 	FIXATOR_OFF
@@ -89,19 +90,22 @@ void takeRightGreenQube() {
 }
 
 void takeMedialGreenQube() {
+	SET_LOW_SPEED
 	FIXATOR_OFF
 	FORWARD(5)
-	TURN_LEFT(88)
-	FORWARD(40)
+	TURN_LEFT(92)
+	FORWARD(38)
 	TURN_RIGHT(40)
 	FORWARD(30)
 	FIXATOR_ON
 	LIFT_HIGH
-	TURN_LEFT(140)
-	FORWARD(40)
+	TURN_LEFT(133)
+	FORWARD(33)
 	FIXATOR_OFF
 	BACK(20)
-	TURN_R(135)
+
+	SET_HIGH_SPEED
+	TURN_R(100)
 	BACK(40)
 }
 
@@ -110,7 +114,9 @@ task main()
 	init();
 
 	readyForGreenQube();
-	takeMedialGreenQube();
+	//takeMedialGreenQube();\
+
+	move(0, 360, 0, 30);
 
 	//readyForGreenQube();
 	//takeLeftGreenQube();

@@ -26,11 +26,11 @@
 #define SPIN_R(degress) spinRight(degress, false);
 #define TURN_LEFT(degress) turnLeft(degress);
 #define TURN_RIGHT(degress) turnRight(degress);
-#define SET_HIGH_SPEED setSpeed(60);
 
-#define SET_LOW_SPEED setSpeed(15);
+#define SET_HIGH_SPEED setSpeed(70);
+#define SET_LOW_SPEED setSpeed(20);
+#define SET_NORMAL_SPEED setSpeed(50);
 
-#define SET_NORMAL_SPEED setSpeed(40);
 #define FIXATOR_OPEN fixator(150);
 #define FIXATOR_CLOSE fixator(0);
 #define FIXATOR_ON fixator(260);
@@ -80,25 +80,26 @@ void takeRightLowBall() {
 	LADLE_READY
 
 	RESET_GYRO
-
-	FORWARD(13)
-
+	FORWARD(11)
 	FIX_GYRO(0)
+
 	TURN_LEFT(90)
 
-
-	BACK(42)
+	RESET_GYRO
+	BACK(45)
 	LADLE_PICK
+	FIX_GYRO(0)
 
-	FORWARD(25)
-	SPIN_RIGHT(65)
-	BACK(20)
-	SET_LOW_SPEED
-	BACK(5)
+	TURN_LEFT(74)
+
+	RESET_GYRO
+	BACK(22)
+	FIX_GYRO(0)
+
+	BACK(27)
 	LADLE_SHOOT
-	SET_NORMAL_SPEED
-	BACK(5)
-	FORWARD(30)
+	SET_HIGH_SPEED
+	FORWARD(70)
 }
 
 void takeLeftLowBall() {
@@ -108,25 +109,26 @@ void takeLeftLowBall() {
 	LADLE_READY
 
 	RESET_GYRO
-
-	FORWARD(14)
-
+	FORWARD(11)
 	FIX_GYRO(0)
+
 	TURN_RIGHT(90)
 
-	BACK(42)
+	RESET_GYRO
+	BACK(45)
 	LADLE_PICK
+	FIX_GYRO(0)
 
-	FORWARD(23)
-	SPIN_LEFT(63)
+	TURN_RIGHT(75)
 
-	BACK(20)
-	SET_LOW_SPEED
-	BACK(5)
+	RESET_GYRO
+	BACK(22)
+	FIX_GYRO(0)
+
+	BACK(27)
 	LADLE_SHOOT
-	SET_NORMAL_SPEED
-	BACK(5)
-	FORWARD(30)
+	SET_HIGH_SPEED
+	FORWARD(70)
 }
 
 
@@ -151,6 +153,7 @@ void takeSideGreenQube() {
 
 	FORWARD(28)
 	FIXATOR_OPEN
+	SET_HIGH_SPEED
 	BACK(50)
 }
 
@@ -189,15 +192,13 @@ task main()
 {
 	init();
 
-	while(true) {
-		takeLeftLowBall();
-	}
+	//while(true) {
+	//	takeLeftLowBall();
+	//}
 
 	takeSideGreenQube();
-	takeRightLowBall();
-
 	takeMedialGreenQube();
-
+	takeRightLowBall();
 	takeSideGreenQube();
 	takeLeftLowBall();
 

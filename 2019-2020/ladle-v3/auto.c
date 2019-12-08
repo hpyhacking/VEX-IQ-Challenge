@@ -40,7 +40,7 @@
 #define LIFT_MIDDLE lift(530, false);
 #define LIFT_LOW lift(1200, false);
 #define LIFT_FOR_GREEN_LOW lift(900, false);
-#define LIFT_FOR_GREEN_HIGH lift(100, false);
+#define LIFT_FOR_GREEN_HIGH lift(70, false);
 #define WAIT_LED waitTouchLED();
 #define WAIT(sec) wait(sec);
 
@@ -191,10 +191,6 @@ void takeMedialGreenQube() {
 task main()
 {
 	init();
-
-	//while(true) {
-	//	takeLeftLowBall();
-	//}
 
 	takeSideGreenQube();
 	takeMedialGreenQube();
